@@ -3,7 +3,7 @@
   import "./styles.css";
 
   let { data, children } = $props();
-  let { user, isAuthenticated } = data;
+  let { user, isAuthenticated } = $derived(data);
 </script>
 
 <svelte:head>
@@ -29,6 +29,9 @@
         {#if isAuthenticated}
           <li class="nav-item">
             <a class="nav-link" href="/workouts">Workouts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/account">Account</a>
           </li>
         {/if}
       </ul>
