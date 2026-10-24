@@ -1,62 +1,65 @@
 <script>
   let { data, form } = $props();
+  let { user, workouts } = $derived(data);
 </script>
 
-<div class="row">
-  <div class="col-md-6 mb-4">
-    <h2>Create Workout</h2>
+{#if user?.user_roles?.includes('admin')}
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <h2>Create Workout</h2>
 
-    {#if form?.success}
-      <div class="alert alert-success" role="alert">
-        Workout erfolgreich erfasst!
-      </div>
-    {:else if form?.message}
-      <div class="alert alert-danger" role="alert">
-        {form.message}
-      </div>
-    {/if}
+      {#if form?.success}
+        <div class="alert alert-success" role="alert">
+          Workout erfolgreich erfasst!
+        </div>
+      {:else if form?.message}
+        <div class="alert alert-danger" role="alert">
+          {form.message}
+        </div>
+      {/if}
 
-    <form method="POST">
-      <div class="mb-3">
-        <label for="athleteId" class="form-label">Athlete ID</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="athleteId" 
-          name="athleteId" 
-          placeholder="z. B. 6ad72ceaefdac68d61369a7e" 
-          required 
-        />
-      </div>
+      <form method="POST">
+        <div class="mb-3">
+          <label for="athleteId" class="form-label">Athlete ID</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="athleteId" 
+            name="athleteId" 
+            placeholder="z. B. 6ad72ceaefdac68d61369a7e" 
+            required 
+          />
+        </div>
 
-      <div class="mb-3">
-        <label for="sportType" class="form-label">Sportart</label>
-        <select class="form-select" id="sportType" name="sportType" required>
-          <option value="RUN">RUN</option>
-          <option value="BIKE">BIKE</option>
-          <option value="SWIM">SWIM</option>
-        </select>
-      </div>
+        <div class="mb-3">
+          <label for="sportType" class="form-label">Sportart</label>
+          <select class="form-select" id="sportType" name="sportType" required>
+            <option value="RUN">RUN</option>
+            <option value="BIKE">BIKE</option>
+            <option value="SWIM">SWIM</option>
+          </select>
+        </div>
 
-      <div class="mb-3">
-        <label for="distanceKm" class="form-label">Distanz (km)</label>
-        <input 
-          type="number" 
-          step="0.1" 
-          class="form-control" 
-          id="distanceKm" 
-          name="distanceKm" 
-          placeholder="10.5" 
-          required 
-        />
-      </div>
+        <div class="mb-3">
+          <label for="distanceKm" class="form-label">Distanz (km)</label>
+          <input 
+            type="number" 
+            step="0.1" 
+            class="form-control" 
+            id="distanceKm" 
+            name="distanceKm" 
+            placeholder="10.5" 
+            required 
+          />
+        </div>
 
-      <button type="submit" class="btn btn-primary">Create Workout</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Create Workout</button>
+      </form>
+    </div>
   </div>
-</div>
 
-<hr />
+  <hr />
+{/if}
 
 <div class="row">
   <div class="col-12">
