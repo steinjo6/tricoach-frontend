@@ -1,52 +1,52 @@
-import { API_BASE_URL } from '\$env/static/private';
+import { env } from '$env/dynamic/public';
 
-export async function load() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/workout`);
-    if (!response.ok) {
-      return { workouts: [] };
+export async function load({ fetch, cookies }) {
+    // 1. Token auslesen (prüft 'jwt_token' oder 'session')
+    const token = cookies.get('jwt_token');
+    console.log('[DEBUG] Token vorhanden:', Boolean(token));
+
+    // 2. URL mit Fallback auf Port 8080
+    const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+    const targetUrl = `${baseUrl}/api/workout`;
+    console.log('[DEBUG] Rufe Ziel-URL auf:', targetUrl);
+
+    try {
+        const response = await fetch(targetUrl, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        console.log('[DEBUG] Backend HTTP-Status:', response.status);
+
+        if (response.ok) {
+            const workouts = await response.json();
+            return { workouts };
+        }
+    } catch (error) {
+        console.error('[DEBUG] Fetch-Fehler:', error);
     }
-    const workouts = await response.json();
-    return { workouts };
-  } catch (error) {
-    console.error("Fehler beim Laden der Workouts:", error);
+
     return { workouts: [] };
-  }
 }
 
 export const actions = {
-  default: async ({ request }) => {
-    const formData = await request.formData();
+    default: async ({ request, fetch, cookies }) => {
+        const token = cookies.get('jwt_token');
+        const data = await request.formData();
+        
+        // Formular-Felder auslesen...
+        const response = await fetch(`${env.PUBLIC_API_BASE_URL || 'http://localhost:8080'}/api/workout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                // Workout-Objekt...
+            })
+        });
 
-    const workout = {
-      athleteId: formData.get('athleteId'),
-      sportType: formData.get('sportType'),
-      distanceKm: parseFloat(formData.get('distanceKm')),
-      workoutState: 'PLANNED'
-    };
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/workout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(workout)
-      });
-
-      if (!response.ok) {
-        return { 
-          success: false, 
-          message: 'Fehler beim Erstellen des Workouts. Existiert der Athlet in der Datenbank?' 
-        };
-      }
-
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: 'Backend nicht erreichbar. Läuft der Spring-Boot-Server auf Port 8080?' 
-      };
+        return { success: response.ok };
     }
-  }
 };
