@@ -1,17 +1,8 @@
-# Freelancer4U Frontend
+# TriCoach Frontend
 
-Frontend mit Svelte 5 und SvelteKit 3. Voraussetzung: Node.js ab 22.17 und npm.
+Frontend für die TriCoach-Plattform mit Svelte 5 und SvelteKit. Voraussetzung: Node.js ab 22.17 und npm.
 
 ## Einrichtung
 
-```sh
+```bash
 npm install
-```
-
-Die Datei `.env.example` nach `.env` kopieren und darin die Backend-Adresse über `API_BASE_URL` konfigurieren.
-
-## Entwicklung
-
-```sh
-npm run dev
-```
