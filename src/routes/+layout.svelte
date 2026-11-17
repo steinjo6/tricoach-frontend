@@ -31,6 +31,9 @@
             <a class="nav-link" href="/workouts">Workouts</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/athletes">Athletes</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/account">Account</a>
           </li>
         {/if}
