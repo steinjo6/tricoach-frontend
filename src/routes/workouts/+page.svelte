@@ -1,6 +1,6 @@
 <script>
   let { data, form } = $props();
-  let { user, workouts } = $derived(data);
+  let { user, workouts, nrOfPages, currentPage } = $derived(data);
 </script>
 
 {#if user?.user_roles?.includes('admin')}
@@ -76,8 +76,8 @@
         </tr>
       </thead>
       <tbody>
-        {#if data.workouts && data.workouts.length > 0}
-          {#each data.workouts as workout}
+        {#if workouts && workouts.length > 0}
+          {#each workouts as workout}
             <tr>
               <td><code>{workout.id}</code></td>
               <td>{workout.athleteId}</td>
@@ -99,5 +99,17 @@
         {/if}
       </tbody>
     </table>
+
+    {#if nrOfPages > 0}
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          {#each Array(nrOfPages) as _, i}
+            <li class="page-item" class:active={currentPage === i + 1}>
+              <a class="page-link" href="/workouts?pageNumber={i + 1}">{i + 1}</a>
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    {/if}
   </div>
 </div>
