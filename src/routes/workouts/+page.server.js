@@ -2,8 +2,6 @@ import { env } from '$env/dynamic/public';
 
 export async function load({ url, fetch, cookies }) {
 	const token = cookies.get('jwt_token');
-
-	// URL-Parameter für Pagination auslesen (Defaults: Seite 1, 4 Einträge)
 	const currentPage = parseInt(url.searchParams.get('pageNumber') || '1');
 	const pageSize = parseInt(url.searchParams.get('pageSize') || '4');
 
@@ -37,51 +35,91 @@ export async function load({ url, fetch, cookies }) {
 }
 
 export const actions = {
-    default: async ({ request, fetch, cookies }) => {
-        const token = cookies.get('jwt_token');
-        const formData = await request.formData();
+	createWorkout: async ({ request, fetch, cookies }) => {
+		const token = cookies.get('jwt_token');
+		const formData = await request.formData();
 
-        // 1. Felder aus dem Formular auslesen und säubern
-        const athleteId = formData.get('athleteId')?.toString().trim();
-        const sportType = formData.get('sportType')?.toString();
-        const distanceKm = parseFloat(formData.get('distanceKm')?.toString() || '0');
+		const athleteId = formData.get('athleteId')?.toString().trim();
+		const sportType = formData.get('sportType')?.toString();
+		const distanceKm = parseFloat(formData.get('distanceKm')?.toString() || '0');
 
-        // 2. Vollständiges DTO mit Standardwerten für die restlichen Backend-Felder bauen
-        const workoutPayload = {
-            athleteId: athleteId,
-            sportType: sportType,
-            distanceKm: distanceKm,
-            title: `${sportType} Training`,
-            description: 'Erfasst via TriCoach Frontend',
-            durationMinutes: 45
-        };
+		const workoutPayload = {
+			athleteId,
+			sportType,
+			distanceKm,
+			title: `${sportType} Training`,
+			description: 'Erfasst via TriCoach Frontend',
+			durationMinutes: 45
+		};
 
-        const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
-        try {
-            const response = await fetch(`${baseUrl}/api/workout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(workoutPayload)
-            });
+		try {
+			const response = await fetch(`${baseUrl}/api/workout`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify(workoutPayload)
+			});
 
-            if (response.ok) {
-                return { success: true };
-            } else {
-                const errorText = await response.text();
-                return { 
-                    success: false, 
-                    message: `Fehler ${response.status}: ${errorText || 'Athlet nicht gefunden oder keine Admin-Berechtigung.'}` 
-                };
-            }
-        } catch (error) {
-            return { 
-                success: false, 
-                message: 'Verbindung zum Backend fehlgeschlagen.' 
-            };
-        }
-    }
+			if (response.ok) {
+				return { success: true };
+			}
+			return { success: false, message: `Fehler beim Erstellen (${response.status})` };
+		} catch (error) {
+			return { success: false, message: 'Backend nicht erreichbar.' };
+		}
+	},
+
+	assignToMe: async ({ request, fetch, cookies }) => {
+		const token = cookies.get('jwt_token');
+		const formData = await request.formData();
+		const workoutId = formData.get('workoutId')?.toString();
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
+		try {
+			const response = await fetch(`${baseUrl}/api/service/me/assignworkout`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({ workoutId })
+			});
+
+			if (!response.ok) {
+				return { success: false, message: `Zuweisung fehlgeschlagen (${response.status})` };
+			}
+			return { success: true };
+		} catch (error) {
+			return { success: false, message: 'Backend nicht erreichbar.' };
+		}
+	},
+
+	completeMyWorkout: async ({ request, fetch, cookies }) => {
+		const token = cookies.get('jwt_token');
+		const formData = await request.formData();
+		const workoutId = formData.get('workoutId')?.toString();
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
+		try {
+			const response = await fetch(`${baseUrl}/api/service/me/completeworkout`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({ workoutId })
+			});
+
+			if (!response.ok) {
+				return { success: false, message: `Abschliessen fehlgeschlagen (${response.status})` };
+			}
+			return { success: true };
+		} catch (error) {
+			return { success: false, message: 'Backend nicht erreichbar.' };
+		}
+	}
 };
