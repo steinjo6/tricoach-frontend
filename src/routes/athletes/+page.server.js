@@ -5,7 +5,7 @@ export async function load({ url, fetch, cookies }) {
 	const currentPage = parseInt(url.searchParams.get('pageNumber') || '1');
 	const pageSize = parseInt(url.searchParams.get('pageSize') || '4');
 
-	const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+	const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 	const targetUrl = `${baseUrl}/api/athlete?pageSize=${pageSize}&pageNumber=${currentPage}`;
 
 	try {
@@ -44,7 +44,7 @@ export const actions = {
 			email: formData.get('email')?.toString().trim()
 		};
 
-		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 
 		try {
 			const response = await fetch(`${baseUrl}/api/athlete`, {

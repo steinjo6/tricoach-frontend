@@ -5,7 +5,7 @@ export async function load({ url, fetch, cookies }) {
 	const currentPage = parseInt(url.searchParams.get('pageNumber') || '1');
 	const pageSize = parseInt(url.searchParams.get('pageSize') || '4');
 
-	const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+	const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 	const targetUrl = `${baseUrl}/api/workout?pageSize=${pageSize}&pageNumber=${currentPage}`;
 
 	try {
@@ -52,7 +52,7 @@ export const actions = {
 			durationMinutes: 45
 		};
 
-		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 
 		try {
 			const response = await fetch(`${baseUrl}/api/workout`, {
@@ -77,7 +77,7 @@ export const actions = {
 		const token = cookies.get('jwt_token');
 		const formData = await request.formData();
 		const workoutId = formData.get('workoutId')?.toString();
-		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 
 		try {
 			const response = await fetch(`${baseUrl}/api/service/me/assignworkout`, {
@@ -102,7 +102,7 @@ export const actions = {
 		const token = cookies.get('jwt_token');
 		const formData = await request.formData();
 		const workoutId = formData.get('workoutId')?.toString();
-		const baseUrl = env.PUBLIC_API_BASE_URL || 'http://localhost:8080';
+		const baseUrl = env.PUBLIC_API_BASE_URL || 'https://tricoach-backend-steinjo6-e4gad5b5b9e4cfdd.belgiumcentral-01.azurewebsites.net';
 
 		try {
 			const response = await fetch(`${baseUrl}/api/service/me/completeworkout`, {
