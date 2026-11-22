@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+RUN rm -f .env
 
 ARG API_BASE_URL
 ARG AUTH0_DOMAIN
